@@ -1950,13 +1950,15 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       headers = response.headers;
       var pre1;
       var YAML = window.YAML;
+      var json;
       contentType = headers && headers["Content-Type"] ? headers["Content-Type"].split(";")[0].trim() : null;
       if (!content) {
         code = $('<code />').text("no content");
         pre = $('<pre class="json" />').append(code);
       } else if (contentType === "application/json" || /\+json$/.test(contentType)) {
-        code = $('<code />').text(JSON.stringify(JSON.parse(content), null, "  "));
-        code1 = $('<code />').text(YAML.stringify(JSON.parse(content), null, "  "));
+	json = JSON.parse(content)
+        code = $('<code />').text(JSON.stringify(json, null, "  "));
+        code1 = $('<code />').text(YAML.stringify(json, null, "  "));
         pre = $('<pre class="json" />').append(code);
         pre1 = $('<pre class="json" />').append(code1);
       } else if (contentType === "application/xml" || /\+xml$/.test(contentType)) {
@@ -1974,12 +1976,26 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       response_body = pre;
       var token = $(this.el)[0].id.substr(-1);
       var tabname = "tabs" + token;
-      tabs = '<div id="'+tabname+'"><ul><li><a href="#'+tabname+'-1">JSON</a></li><li><a href="#'+tabname+'-2">YAML</a></li></ul><div id="tabs_container"><div id="'+tabname+'-1"><p id="'+tabname+'-1-fill"></p></div><div id="'+tabname+'-2"><p id="'+tabname+'-2-fill"></p></div></div></div>';
+      tabs = '<div id="'+tabname+'" style="padding-top:10px;"><ul><li><a href="#'+tabname+'-1">JSON</a></li><li><a href="#'+tabname+'-2">YAML</a></li><li><a href="#'+tabname+'-3">HTML</a></li></ul><div id="tabs_container"><div id="'+tabname+'-1"><p id="'+tabname+'-1-fill"></p></div><div id="'+tabname+'-2"><p id="'+tabname+'-2-fill"></p></div><div class="items" id="'+tabname+'-3"><p id="items"><ul id="'+tabname+'-3-fill"></ul></p></div></div></div>';
       $(".request_url", $(this.el)).html("<pre>" + url + "</pre>");
       $(".response_code", $(this.el)).html("<pre>" + response.status + "</pre>");
       $(".response_body", $(this.el)).html(tabs);
       $("#"+tabname+"-1-fill").html(pre);
       $("#"+tabname+"-2-fill").html(pre1);
+      var bus = '';
+      if(json.name) {
+         bus += '<li><img src="'+json.image_url+'"><h3 href="'+json.url+'">'+json.name+'</h3><p>..."'+json.snippet_text+'..."</p></li>';
+      } else {
+	      for(var i=0; i<json.businesses.length; ++i){
+		      var business = json.businesses[i];
+		      if(business.image_url) {
+         bus += '<li><img src="'+business.image_url+'"><h3 style="padding:0" href="'+business.url+'">'+business.name+'</h3>'+business.id+'<p>..."'+business.snippet_text+'..."</p></li>';
+		      }
+
+	      }
+
+      }
+      $("#"+tabname+"-3-fill").append(bus);
       $(".response_headers", $(this.el)).html("<pre>" + _.escape(JSON.stringify(response.headers, null, "  ")).replace(/\n/g, "<br>") + "</pre>");
       $(".response", $(this.el)).slideDown();
       $(".response_hider", $(this.el)).show();
