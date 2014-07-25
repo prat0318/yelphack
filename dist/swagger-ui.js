@@ -1950,7 +1950,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       headers = response.headers;
       var pre1;
       var YAML = window.YAML;
-      var json;
+      var json = {'businesses': []};
       contentType = headers && headers["Content-Type"] ? headers["Content-Type"].split(";")[0].trim() : null;
       if (!content) {
         code = $('<code />').text("no content");
