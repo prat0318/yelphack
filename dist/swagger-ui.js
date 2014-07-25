@@ -1507,7 +1507,8 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       operationView = new OperationView({
         model: operation,
         tagName: 'li',
-        className: 'endpoint'
+        className: 'endpoint',
+	id: 'endpoint' + window.endpoint++
       });
       $('.endpoints', $(this.el)).append(operationView.render().el);
       return this.number++;
@@ -1947,13 +1948,17 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         url = response.request.url;
       }
       headers = response.headers;
+      var pre1;
+      var YAML = window.YAML;
       contentType = headers && headers["Content-Type"] ? headers["Content-Type"].split(";")[0].trim() : null;
       if (!content) {
         code = $('<code />').text("no content");
         pre = $('<pre class="json" />').append(code);
       } else if (contentType === "application/json" || /\+json$/.test(contentType)) {
         code = $('<code />').text(JSON.stringify(JSON.parse(content), null, "  "));
+        code1 = $('<code />').text(YAML.stringify(JSON.parse(content), null, "  "));
         pre = $('<pre class="json" />').append(code);
+        pre1 = $('<pre class="json" />').append(code1);
       } else if (contentType === "application/xml" || /\+xml$/.test(contentType)) {
         code = $('<code />').text(this.formatXml(content));
         pre = $('<pre class="xml" />').append(code);
@@ -1967,14 +1972,20 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
         pre = $('<pre class="json" />').append(code);
       }
       response_body = pre;
+      var token = $(this.el)[0].id.substr(-1);
+      var tabname = "tabs" + token;
+      tabs = '<div id="'+tabname+'"><ul><li><a href="#'+tabname+'-1">JSON</a></li><li><a href="#'+tabname+'-2">YAML</a></li></ul><div id="tabs_container"><div id="'+tabname+'-1"><p id="'+tabname+'-1-fill"></p></div><div id="'+tabname+'-2"><p id="'+tabname+'-2-fill"></p></div></div></div>';
       $(".request_url", $(this.el)).html("<pre>" + url + "</pre>");
       $(".response_code", $(this.el)).html("<pre>" + response.status + "</pre>");
-      $(".response_body", $(this.el)).html(response_body);
+      $(".response_body", $(this.el)).html(tabs);
+      $("#"+tabname+"-1-fill").html(pre);
+      $("#"+tabname+"-2-fill").html(pre1);
       $(".response_headers", $(this.el)).html("<pre>" + _.escape(JSON.stringify(response.headers, null, "  ")).replace(/\n/g, "<br>") + "</pre>");
       $(".response", $(this.el)).slideDown();
       $(".response_hider", $(this.el)).show();
       $(".response_throbber", $(this.el)).hide();
-      return hljs.highlightBlock($('.response_body', $(this.el))[0]);
+      setTimeout(function() { $('#'+tabname).tabulous({ effect: 'slideLeft' }); }, 50);
+      return hljs.highlightBlock($('#'+tabname+'-1-fill')[0]);
     };
 
     OperationView.prototype.toggleOperationContent = function() {
