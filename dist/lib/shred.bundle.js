@@ -1129,16 +1129,20 @@ var processOptions = function(request,options) {
 
 };
 
+/* Get parameter from URL */
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+}
+
 // `createRequest` is also called by the constructor, after `processOptions`.
 // This actually makes the request and processes the response, so `createRequest`
 // is a bit of a misnomer.
-
 var createRequest = function(request) {
   var timeout ;
   var oauth = OAuth({
       consumer: {
-          public: 'ZHwOCjqmczNmgXbLR-Fslg',
-          secret: 'EH0uL2Urlbd8OJs9GAKvDtyEmPc'
+          public: getURLParameter('Consumer_Key') || 'ZHwOCjqmczNmgXbLR-Fslg',
+          secret: getURLParameter('Consumer_Secret') || 'EH0uL2Urlbd8OJs9GAKvDtyEmPc'
       },
       signature_method: 'HMAC-SHA1'
   });
@@ -1148,9 +1152,14 @@ var createRequest = function(request) {
       method: 'GET'
   };
 
+  var secret_token = getURLParameter('Token_Secret');
+  if (secret_token) {
+    secret_token = secret_token.replace('/', '');
+  }
+
   var token = {
-      public: 'XBKu_xGa1pfG1egTG5l1Yddg-QrrA6J0',
-      secret: 'pcA3g-nfOTOD3wlcGjNfX8A9s_k'
+      public: getURLParameter('Token') || 'XBKu_xGa1pfG1egTG5l1Yddg-QrrA6J0',
+      secret: secret_token || 'pcA3g-nfOTOD3wlcGjNfX8A9s_k'
   };
 
   var auth_param = $.param(oauth.authorize(request_data, token))
