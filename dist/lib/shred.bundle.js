@@ -1135,7 +1135,25 @@ var processOptions = function(request,options) {
 
 var createRequest = function(request) {
   var timeout ;
+  var oauth = OAuth({
+      consumer: {
+          public: 'ZHwOCjqmczNmgXbLR-Fslg',
+          secret: 'EH0uL2Urlbd8OJs9GAKvDtyEmPc'
+      },
+      signature_method: 'HMAC-SHA1'
+  });
 
+  var request_data = {
+      url: 'http://' + request.host + request.path + (request.query ? '?' + request.query : ""),
+      method: 'GET'
+  };
+
+  var token = {
+      public: 'XBKu_xGa1pfG1egTG5l1Yddg-QrrA6J0',
+      secret: 'pcA3g-nfOTOD3wlcGjNfX8A9s_k'
+  };
+
+  var auth_param = $.param(oauth.authorize(request_data, token))
   request.log.debug("Creating request ..");
   request.log.debug(request);
 
@@ -1143,7 +1161,7 @@ var createRequest = function(request) {
     host: request.host,
     port: request.port,
     method: request.method,
-    path: request.path + (request.query ? '?'+request.query : ""),
+    path: request.path + '?' + (request.query ? request.query+'&'+auth_param : auth_param),
     headers: request.getHeaders(),
     // Node's HTTP/S modules will ignore this, but we are using the
     // browserify-http module in the browser for both HTTP and HTTPS, and this
