@@ -54,6 +54,9 @@
         $('pre code').each(function(i, e) {
           hljs.highlightBlock(e)
         });
+        Docs.toggleEndpointListForResource('search');
+        Docs.toggleEndpointListForResource('business');
+        Docs.toggleEndpointListForResource('check_ins');
       },
       onFailure: function(data) {
         log("Unable to Load SwaggerUI");
@@ -70,6 +73,7 @@
       }
     })
     window.swaggerUi.load();
+
   });
   </script>
 </head>
