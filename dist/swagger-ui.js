@@ -1985,6 +1985,21 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       var bus = '';
       if(json.name) {
          bus += '<li><img src="'+json.image_url+'"><h3 href="'+json.url+'">'+json.name+'<img style="float:right" src="'+json.rating_img_url+'"/></h3><i><p>"'+json.snippet_text+'..."</i></p></li>';
+      } else if(json.check_ins){
+	    bus += '<b>Your latest check ins...</b><br><br>'  
+	      
+	      for(var i=0; i<json.check_ins.length; ++i){
+		      var check_in = json.check_ins[i];
+		      for(var j=0; j < json.businesses.length; ++j){
+			      if(check_in.business_id == json.businesses[j].id) {
+				      var business = json.businesses[j];
+				      if(business.image_url) {
+			 bus += '<li><img src="'+business.image_url+'"><h3 style="padding:0" href="'+business.url+'">'+business.name+'<img style="float:right" src="'+business.rating_img_url+'"/>'+'</h3><span style="font-size:12px; color: gray;">'+business.id+
+				 '</span><p>Last Checked-in on: '+(new Date((check_in.time_created)*1000)).toString()+'</p></li>';
+				      }
+			}
+	      }
+	  }
       } else {
 	      for(var i=0; i<json.businesses.length; ++i){
 		      var business = json.businesses[i];
