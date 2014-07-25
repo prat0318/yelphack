@@ -1950,7 +1950,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       headers = response.headers;
       var pre1;
       var YAML = window.YAML;
-      var json;
+      var json = {'businesses': []};
       contentType = headers && headers["Content-Type"] ? headers["Content-Type"].split(";")[0].trim() : null;
       if (!content) {
         code = $('<code />').text("no content");
@@ -1984,12 +1984,12 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       $("#"+tabname+"-2-fill").html(pre1);
       var bus = '';
       if(json.name) {
-         bus += '<li><img src="'+json.image_url+'"><h3 href="'+json.url+'">'+json.name+'</h3><p>..."'+json.snippet_text+'..."</p></li>';
+         bus += '<li><img src="'+json.image_url+'"><h3 href="'+json.url+'">'+json.name+'<img style="float:right" src="'+json.rating_img_url+'"/></h3><i><p>"'+json.snippet_text+'..."</i></p></li>';
       } else {
 	      for(var i=0; i<json.businesses.length; ++i){
 		      var business = json.businesses[i];
 		      if(business.image_url) {
-         bus += '<li><img src="'+business.image_url+'"><h3 style="padding:0" href="'+business.url+'">'+business.name+'</h3>'+business.id+'<p>..."'+business.snippet_text+'..."</p></li>';
+         bus += '<li><img src="'+business.image_url+'"><h3 style="padding:0" href="'+business.url+'">'+business.name+'<img style="float:right" src="'+business.rating_img_url+'"/>'+'</h3><span style="font-size:12px; color: gray;">'+business.id+'</span><p><i>"'+business.snippet_text+'..."</i></p></li>';
 		      }
 
 	      }

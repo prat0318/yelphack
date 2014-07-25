@@ -1,0 +1,33 @@
+.items * {margin: 0; padding: 0;}
+ 
+.items div {
+  margin: 20px;
+}
+ 
+.items ul {
+  list-style-type: none;
+  width: 500px;
+}
+ 
+.items h3 {
+  font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
+}
+ 
+.items li img {
+  float: left;
+  margin: 0 15px 0 0;
+}
+ 
+.items li p {
+  font: 200 12px/1.5 Georgia, Times New Roman, serif;
+}
+ 
+.items li {
+  padding: 10px;
+  overflow: auto;
+}
+ 
+.items li:hover {
+  background: #eee;
+  cursor: pointer;
+}
